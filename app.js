@@ -61,3 +61,25 @@ BouncingCritter.prototype.act = function(view) {
     this.direction = view.find(" ") || "s";
   return {type: "move", direction: this.direction};
 };
+
+//World object - constructor takes a plan (array of strings representing the grid) and a legend (tells us what each character in the map means) as arguments. Contains a constructor for every character.
+//originChar makes it easy to find out which character the element was created from
+function elementFromChar(legend, ch) {
+  if (ch == " ")
+    return null;
+  var element = new legend[ch]();
+  element.originChar = ch;
+  return element;
+}
+
+function World(map, legend) {
+  var grid = new Grid(map[0].length, map.length);
+  this.grid = grid;
+  this.legend = legend;
+
+  map.forEach(function(line, y) {
+  for (var x = 0; x < line.length; x++)
+    grid.set(newVector(x, y),
+             elementFromChar(legend, line[x]));
+  });
+}
